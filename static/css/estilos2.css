@@ -36,6 +36,15 @@ h2{
   border: #757575 4px solid; 
 }
 
+.box2{
+  background:#ffd891;
+  width:90%;
+  border-radius:6px;
+  margin: 0 auto 0 auto;
+  padding:0px 0px 20px 0px;
+  border: #757575 4px solid; 
+}
+
 .email{
   background:#ecf0f1;
   border: #ccc 1px solid;
@@ -200,4 +209,26 @@ img.mediana{
 .error {
   color: #D8000C;
   background-color: #FFBABA;
+}
+
+table {
+  /* border-collapse: collapse; */
+  width: 100%;
+  padding: 1em;
+}
+th, td {
+  width: 25%;
+  text-align: left;
+  vertical-align: top;
+  border: 1px solid #444444;
+  border-spacing: 0;
+}
+tr:nth-child(even){background-color: #f8bd4ef3}
+th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.tabla {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 }

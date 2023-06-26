@@ -2,7 +2,6 @@ import hashlib
 from datetime import datetime
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func, case
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -40,15 +39,13 @@ def comprobar():
 				flash('Correo, contraseña o rol incorrectos.', 'error')
 				return render_template('login.html')
 		elif rol == '1':
-				print ('padre')
 				user = Padre.query.filter_by(correo=correo, clave=clave).first()
 				if user:
 					print ('user padre')
 					# Autenticación exitosa
-					return redirect
+					return render_template('login.html')
 		flash('Correo, contraseña o rol incorrectos.', 'error')
 	else:
-		print('paso por aqui')
 		return render_template('login.html')
 
 ################################# PRECEPTOR ###################################
@@ -76,8 +73,6 @@ def guardar_asistencia():
 		id_clase = request.form['claseSelect']
 		fecha_str = request.form['fechaInput']
 		fecha = datetime.strptime(fecha_str, '%Y-%m-%d')
-		#fecha = fechafr.strftime('%Y/%m/%d')
-		print ('fecha: ', fecha)
 		for est, just in zip(request.form.getlist('estudiante_id'), request.form.getlist('justificacion')):
 			asistencia = Asistencia()
 			asistencia.fecha = fecha
@@ -99,7 +94,6 @@ def guardar_asistencia():
 def informe_detalles():
 	xcursos = Curso.query.filter_by(idpreceptor=session['id']).all()
 	xdivisiones = {}
-	print (xcursos)
 	for curso in xcursos:
 		xdivisiones[curso.id] = curso.division
 	return render_template('informe_detalles.html', cursos=xcursos, divisiones=xdivisiones, usuario=session['id'])
@@ -110,33 +104,50 @@ def listar_asistencias():
 		estudiantes = Estudiante.query.filter_by (idcurso = request.form['cursosSelect'])
 		estudiantes = sorted(estudiantes, key=lambda x: x.apellido)
 		asistencias = Asistencia.query.all()
-		r = {}
+		total = {}
+		falta_clases = {}
+		falta_clases_just = {}
+		pres_clases = {}
+		falta_ef = {}
+		falta_ef_just = {}
+		pres_ef = {}
 		for est in estudiantes:
 			idEst = est.id
-			cont = 0
+			total[idEst] = 0 	# total
+			falta_clases[idEst] = 0	# falta a clases
+			falta_clases_just[idEst] = 0	# falta a clases justificadas
+			pres_clases[idEst] = 0	# presencia a clases
+			falta_ef[idEst] = 0	# falta a ef
+			falta_ef_just[idEst] = 0	# falta a ef justificadas
+			pres_ef[idEst] = 0	# presencia a ef
 			for asis in asistencias:
 				if asis.idestudiante == est.id:
+					# falta a clases
 					if asis.codigoclase == 1 and asis.asistio == 'n':
-						cont += 1
+						if asis.justificacion != '':
+							falta_clases[idEst] += 1
+						else:
+							falta_clases_just[idEst] += 1
+						total[idEst] += 1
+					elif asis.codigoclase == 1 and asis.asistio == 's': 
+						pres_clases[idEst] += 1
+					# falta a ef
 					if asis.codigoclase == 2 and asis.asistio == 'n':
-						cont += 0.5
-				if idEst not in r:
-					r[idEst] = cont
-				else:
-					r[idEst] += cont
-		return render_template('listar_asistencias.html', estudiantes=estudiantes, asistencias=asistencias, listas=r)
+						if asis.justificacion != '':
+							falta_ef[idEst] += 1
+						else:
+							falta_ef_just[idEst] += 1
+						total[idEst] += 1
+					elif asis.codigoclase == 2 and asis.asistio == 's': 
+						pres_ef[idEst] += 1
+		return render_template('listar_asistencias.html', estudiantes=estudiantes, total=total, falta_clases=falta_clases, falta_clases_just=falta_clases_just, pres_clases=pres_clases, falta_ef=falta_ef, falta_ef_just=falta_ef_just, pres_ef=pres_ef)
 	else:
 		flash ('Hubo un error inesperado', 'error')
 		return redirect(url_for('informe_detalles.html'))
 
-# version de prueba
-@app.route('/listar_asistencia')
-def listar_asistencia():
-    preceptor = Preceptor.query.filter_by(correo=session['email']).first()
-    cursos = Curso.query.filter_by(idpreceptor=session['id']).all()
-    return render_template('listar.html', cursos=cursos, preceptor=preceptor)
-
-
+@app.route('/volver')
+def volver():
+	return render_template('preceptor.html')
 
 ######################### LOGOUT ############################
 
@@ -146,7 +157,6 @@ def logout():
 	session.pop('email')
 	session.pop('id')
 	return redirect(url_for('raiz'))
-
 
 
 if __name__ == '__main__':

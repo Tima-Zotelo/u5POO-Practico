@@ -1,23 +1,64 @@
-{% extends './base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="{{url_for('static', filename= 'img/logo.png')}}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename= 'css/estilos2.css')}}">
+    <title>{% block tittle %} {% endblock %} </title>
+</head>
+<body>
 
-{% block tittle %}Informe con detalles{% endblock %}
-
-{% block body %}
-<h2>Lista de asistencias</h2>
-<hr>
-    {% for est in estudiantes %}
-        <h2>{{ est.apellido }} {{ est.nombre }}</h2>
-        {% for asis in asistencias %}
-            {% if asis.idestudiante == est.id %}
-                <label for="">Clases de aula ausentes: {{ asis }}  </label>
-            {% endif %}
-        {% endfor %}
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         
-        <hr>
-    {% endfor %}
-    <br><br>
-    <input type="submit" value="Siguiente" class="btn">
-</form>
+        <header>
+            <h1>Colegio San Miguel</h1>
+        </header>
+        <div>
+            <img class="mediana" src="{{url_for('static', filename= 'img/logo.png')}}">
+        </div>
+        <br>
+        <div class="box2">
+            <h2>Lista de asistencias</h2>
+            <hr>
+                <table class="tabla">
+                    <td>Nombre alumnos</td>
+                    <td>Clases de aula presentes</td>
+                    <td>Clases de aula ausentes justificadas</td>
+                    <td>Clases de aula ausentes injustificadas</td>
+                    <td>Clases de Educacion fisica presente</td>
+                    <td>Clases de Educacion Fisicas justificadas</td>
+                    <td>Clases de Educacion Fisica injustificadas</td>
+                    <td>Computo total de inasistencias</td>
+                    {% for est in estudiantes %}
+                        <tr>
+                            <td> {{ est.nombre }} {{ est.apellido }} </td>
+                            <td> {{ pres_clases[est.id] }} </td>
+                            <td> {{ falta_clases_just[est.id] }} </td>
+                            <td> {{ falta_clases[est.id] }} </td>
+                            <td> {{ pres_ef[est.id] }} </td>
+                            <td> {{ falta_ef_just[est.id] }} </td>
+                            <td> {{ falta_ef[est.id] }} </td>
+                            <td> {{ total[est.id] }} </td>
+                            <!-- 
+                                total=total, 
+                                falta_clases=falta_clases, 
+                                falta_clases_just=falta_clases_just, 
+                                pres_clases=pres_clases, 
+                                falta_ef=falta_ef, 
+                                falta_ef_just=falta_ef_just, 
+                                pres_ef=pres_ef)
+                             -->
+                        </tr>
+                    {% endfor %}
+                </table>
+                <br><br>
+            <br>
+            <a href="{{ url_for ('volver') }}" class="btn">Volver atras</a>
+        </div>
 
-{% endblock %}
 </html>
