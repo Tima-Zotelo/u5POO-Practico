@@ -36,7 +36,7 @@
                     <td>Computo total de inasistencias</td>
                     {% for est in estudiantes %}
                         <tr>
-                            <td> {{ est.nombre }} {{ est.apellido }} </td>
+                            <td> {{ est.apellido }} {{ est.nombre }} </td>
                             <td> {{ pres_clases[est.id] }} </td>
                             <td> {{ falta_clases_just[est.id] }} </td>
                             <td> {{ falta_clases[est.id] }} </td>
@@ -44,15 +44,6 @@
                             <td> {{ falta_ef_just[est.id] }} </td>
                             <td> {{ falta_ef[est.id] }} </td>
                             <td> {{ total[est.id] }} </td>
-                            <!-- 
-                                total=total, 
-                                falta_clases=falta_clases, 
-                                falta_clases_just=falta_clases_just, 
-                                pres_clases=pres_clases, 
-                                falta_ef=falta_ef, 
-                                falta_ef_just=falta_ef_just, 
-                                pres_ef=pres_ef)
-                             -->
                         </tr>
                     {% endfor %}
                 </table>

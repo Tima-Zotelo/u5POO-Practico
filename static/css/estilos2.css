@@ -212,12 +212,11 @@ img.mediana{
 }
 
 table {
-  /* border-collapse: collapse; */
   width: 100%;
   padding: 1em;
 }
 th, td {
-  width: 25%;
+  width: 10%;
   text-align: left;
   vertical-align: top;
   border: 1px solid #444444;
