@@ -73,15 +73,16 @@ def guardar_asistencia():
 		id_clase = request.form['claseSelect']
 		fecha_str = request.form['fechaInput']
 		fecha = datetime.strptime(fecha_str, '%Y-%m-%d')
-		for est, just in zip(request.form.getlist('estudiante_id'), request.form.getlist('justificacion')):
+		for est, just, f in zip(request.form.getlist('estudiante_id'), request.form.getlist('justificacion'), request.form.getlist('estudianteSelect')):
 			asistencia = Asistencia()
 			asistencia.fecha = fecha
 			asistencia.codigoclase = id_clase
-			asistencia.asistio = request.form['estudianteSelect']
+			asistencia.asistio = f
+			print (f'justificacion: {just}')
 			asistencia.justificacion = just
 			asistencia.idestudiante = est
 			db.session.add(asistencia)
-			db.session.commit()
+		db.session.commit()
 		flash('Asistencia guardada exitosamente.', 'correcto')
 		return render_template('preceptor.html')
 	else: 
@@ -124,7 +125,7 @@ def listar_asistencias():
 				if asis.idestudiante == est.id:
 					# falta a clases
 					if asis.codigoclase == 1 and asis.asistio == 'n':
-						if asis.justificacion != '':
+						if not asis.justificacion:
 							falta_clases[idEst] += 1
 						else:
 							falta_clases_just[idEst] += 1
@@ -133,7 +134,7 @@ def listar_asistencias():
 						pres_clases[idEst] += 1
 					# falta a ef
 					if asis.codigoclase == 2 and asis.asistio == 'n':
-						if asis.justificacion != '':
+						if not asis.justificacion:
 							falta_ef[idEst] += 1
 						else:
 							falta_ef_just[idEst] += 1
