@@ -1,0 +1,30 @@
+{% extends './base.html' %}
+
+{% block tittle %}Registrar asistencia{% endblock %}
+
+{% block body %}
+<h2>Registrar Asistencia</h2>
+<form action="/ingresar_asistencia" method="POST">
+    <label for="cursosSelect" class="container">Seleccione un curso: </label>
+    <select name="cursosSelect" id="cursos" class="email">
+        {% for curso in cursos %}
+            {% if curso.idpreceptor == usuario%}
+                <option value="{{ curso.id }}"> {{ curso.anio }}° {{ divisiones[curso.id] }}ª </option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    <br><br>
+    <label for="claseSelect" class="container">Seleccione una clase: </label>
+    <select name="claseSelect" id="clase" class="caja">
+        <option value="1">Aula</option>
+        <option value="2">Educacion Fisica</option>
+    </select>
+    <br><br>
+    <label for="fechaInput" class="container">Ingrese la fecha: </label>
+    <input type="date" name="fechaInput" id="fechaInput" class="caja">
+    <br><br>
+    <input type="submit" value="Siguiente" class="btn">
+</form>
+
+{% endblock %}
+</html>

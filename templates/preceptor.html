@@ -1,0 +1,11 @@
+{% extends './base.html' %}
+
+{% block tittle %}Preceptor{% endblock %}
+
+{% block body %}
+    <ul>
+	    <div class="btn"><a href = "{{ url_for('registrar_asistencia') }}"> Registrar asistencia </a></div><br>
+        <div class="btn"><a href = "{{ url_for('informe_detalles') }}"> Informe con detalles </a></div><br>	
+	</ul>
+{% endblock %}
+</html>

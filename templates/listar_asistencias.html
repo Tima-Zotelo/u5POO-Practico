@@ -1,0 +1,23 @@
+{% extends './base.html' %}
+
+{% block tittle %}Informe con detalles{% endblock %}
+
+{% block body %}
+<h2>Lista de asistencias</h2>
+<hr>
+    {% for est in estudiantes %}
+        <h2>{{ est.apellido }} {{ est.nombre }}</h2>
+        {% for asis in asistencias %}
+            {% if asis.idestudiante == est.id %}
+                <label for="">Clases de aula ausentes: {{ asis }}  </label>
+            {% endif %}
+        {% endfor %}
+        
+        <hr>
+    {% endfor %}
+    <br><br>
+    <input type="submit" value="Siguiente" class="btn">
+</form>
+
+{% endblock %}
+</html>

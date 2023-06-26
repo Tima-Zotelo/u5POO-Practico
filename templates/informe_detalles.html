@@ -1,0 +1,21 @@
+{% extends './base.html' %}
+
+{% block tittle %}Informe con detalles{% endblock %}
+
+{% block body %}
+<h2>Informe con detalles</h2>
+<form action="/listar_asistencias" method="POST">
+    <label for="cursosSelect" class="container">Seleccione un curso: </label>
+    <select name="cursosSelect" id="cursos" class="email">
+        {% for curso in cursos %}
+            {% if curso.idpreceptor == usuario%}
+                <option value="{{ curso.id }}"> {{ curso.anio }}° {{ divisiones[curso.id] }}ª </option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    <br><br>
+    <input type="submit" value="Siguiente" class="btn">
+</form>
+
+{% endblock %}
+</html>

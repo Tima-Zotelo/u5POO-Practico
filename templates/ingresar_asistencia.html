@@ -1,0 +1,28 @@
+{% extends './base.html' %}
+
+{% block tittle %}Registrar asistencia{% endblock %}
+
+{% block body %}
+<h2>Registrar Asistencia</h2>
+<hr>
+<form action="/guardar_asistencia" method="POST">
+    {% for estudiante in estudiantes %}
+        <h2>{{ estudiante.apellido }} {{ estudiante.nombre }}:</h2>
+        <select name="estudianteSelect" id="estudiante" class="email">
+            <option value="s">Asistió</option>
+            <option value="n">No asistió</option>
+        </select>
+        <input type="hidden" name="claseSelect" value="{{ clase }}">
+        <br><br>
+        <label for="justificacion">Justificacion:</label>
+        <textarea name="justificacion" id="justificacion" class="caja"></textarea>
+        <input type="hidden" name="estudiante_id" value="{{ estudiante.id }}">
+        <br><br>
+        <hr>
+    {% endfor %}
+    <input type="hidden" name="fechaInput" id="fechaInput" class="caja" value="{{ fecha }}">
+    <input type="submit" value="Guardar" class="btn">
+</form>
+{% endblock %}
+
+</html>

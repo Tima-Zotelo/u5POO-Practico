@@ -1,0 +1,24 @@
+{% extends './base.html' %}
+
+{% block tittle %}Iniciar Sesion{% endblock %}
+
+{% block body %}
+<form action = "/login" method="POST">
+<h2>Iniciar Sesion</h2>    
+        <input type="email" name="email" class="email" placeholder="Email"/>
+        <input type="password" name="password" class="password" placeholder="Contraseña"/>
+        <h2>Seleccione su rol</h2>
+        <label class="container">
+            <input type="radio" checked="checked" name="rol" value="0">Preceptor
+            <span class="checkmark"></span>
+            <br>
+        </label>
+        <label class="container">
+            <input type="radio" name="rol" value="1">Padre/Madre/Tutor
+            <span class="checkmark"></span>
+            <br>
+        </label>
+        <input class="btn" type = "submit" value = "Entrar"/>
+</form>
+
+{% endblock %}
