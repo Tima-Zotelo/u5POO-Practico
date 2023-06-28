@@ -25,7 +25,6 @@ def comprobar():
 		correo = request.form['email']
 		clave = request.form['password']
 		rol = request.form['rol']
-
 		if rol == '0':
 			hash = hashlib.md5(bytes(clave, encoding='utf-8'))
 			user = Preceptor.query.filter_by(correo=correo, clave=hash.hexdigest()).first()
@@ -39,12 +38,11 @@ def comprobar():
 				flash('Correo, contraseña o rol incorrectos.', 'error')
 				return render_template('login.html')
 		elif rol == '1':
-				user = Padre.query.filter_by(correo=correo, clave=clave).first()
-				if user:
-					print ('user padre')
-					# Autenticación exitosa
-					return render_template('login.html')
-		flash('Correo, contraseña o rol incorrectos.', 'error')
+			hash = hashlib.md5(bytes(clave, encoding='utf-8'))
+			user = Padre.query.filter_by(correo=correo, clave=hash.hexdigest()).first()
+			flash ('Funcionalidad aun no terminada :)', 'info')
+			# Autenticación exitosa
+			return render_template('login.html')
 	else:
 		return render_template('login.html')
 
@@ -57,7 +55,7 @@ def registrar_asistencia():
 	xdivisiones = {}
 	for curso in xcursos:
 		xdivisiones[curso.id] = curso.division
-	return render_template('registrar_asistencia.html', cursos=xcursos, divisiones=xdivisiones, usuario=session['id'])
+	return render_template('registrar_asistencia.html', fecha=datetime.now().strftime('%Y-%m-%d'), cursos=xcursos, divisiones=xdivisiones, usuario=session['id'])
 @app.route('/ingresar_asistencia', methods=['GET', 'POST'])
 def ingresar_asistencia():
 	if request.method == 'POST':
@@ -69,19 +67,24 @@ def ingresar_asistencia():
 		return redirect(url_for('registrar_asistencia'))
 @app.route('/guardar_asistencia', methods=['GET', 'POST'])
 def guardar_asistencia():
-	if request.method == 'POST':
+	if request.method == 'POST' and session['id'] != None:
 		id_clase = request.form['claseSelect']
 		fecha_str = request.form['fechaInput']
-		fecha = datetime.strptime(fecha_str, '%Y-%m-%d')
+		fecha_h = str (datetime.strptime(fecha_str, '%Y-%m-%d'))
+		fecha = fecha_h.split(' ')[0]
 		for est, just, f in zip(request.form.getlist('estudiante_id'), request.form.getlist('justificacion'), request.form.getlist('estudianteSelect')):
 			asistencia = Asistencia()
-			asistencia.fecha = fecha
-			asistencia.codigoclase = id_clase
-			asistencia.asistio = f
-			print (f'justificacion: {just}')
-			asistencia.justificacion = just
-			asistencia.idestudiante = est
-			db.session.add(asistencia)
+			aux = Asistencia.query.filter_by (fecha=fecha, idestudiante=est, codigoclase=id_clase).first()
+			if not aux:
+				asistencia.fecha = fecha
+				asistencia.codigoclase = id_clase
+				asistencia.asistio = f
+				asistencia.justificacion = just
+				asistencia.idestudiante = est
+				db.session.add(asistencia)
+			else:
+				flash ('Ya existe una asistencia para esta clase', 'error')
+				return redirect(url_for('registrar_asistencia'))
 		db.session.commit()
 		flash('Asistencia guardada exitosamente.', 'correcto')
 		return render_template('preceptor.html')
@@ -101,7 +104,7 @@ def informe_detalles():
 
 @app.route('/listar_asistencias', methods=['GET', 'POST'])
 def listar_asistencias():
-	if request.method == 'POST':
+	if request.method == 'POST' and session['id'] != None:
 		estudiantes = Estudiante.query.filter_by (idcurso = request.form['cursosSelect'])
 		estudiantes = sorted(estudiantes, key=lambda x: x.apellido)
 		asistencias = Asistencia.query.all()
@@ -163,4 +166,4 @@ def logout():
 if __name__ == '__main__':
 	with app.app_context():
 		db.create_all()
-		app.run(debug=True)
+		app.run()
